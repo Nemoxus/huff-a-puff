@@ -1,5 +1,5 @@
 # backend/app/main.py
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, status, Depends
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 import os
@@ -45,9 +45,9 @@ def create_access_token(data: dict):
 
 @app.post("/api/register")
 async def register_user(
-    username: str = Form(..., min_length=3, max_length=20),
+    username: str = Form(...),
     email: str = Form(...),
-    password: str = Form(..., min_length=6),
+    password: str = Form(...),
     id_image: UploadFile = File(...)
 ):
     """
