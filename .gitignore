@@ -1,3 +1,13 @@
 
 /backend/.env
 my_env
+__pycache__/
+*.pyc
+
+# Next.js build artifacts and cache
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Node modules
+frontend/node_modules/
