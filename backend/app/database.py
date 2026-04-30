@@ -14,3 +14,6 @@ db = client["huff_a_puff_db"]
 
 # Export the users collection for use in other parts of the app
 users_collection = db["users"]
+
+
+posts_collection = db["posts"]  # Or database["posts"], depending on what you named your db variable!

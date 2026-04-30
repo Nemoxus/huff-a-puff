@@ -1,4 +1,9 @@
 # backend/app/main.py
+from dotenv import load_dotenv
+load_dotenv()
+
+# backend/app/main.py
+from routers import posts
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
@@ -130,3 +135,6 @@ async def login_user(username: str = Form(...), password: str = Form(...)):
         "username": user["username"],
         "message": "Login successful!"
     }
+
+# --- INCLUDE ROUTERS ---
+app.include_router(posts.router)
