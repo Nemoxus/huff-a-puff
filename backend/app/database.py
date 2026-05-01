@@ -1,19 +1,22 @@
 import os
 from pymongo import AsyncMongoClient
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
 
-# Load the connection string from the .env file
 load_dotenv()
+
+# --- MONGODB SETUP ---
 MONGO_URL = os.getenv("MONGODB_URL")
-
-# Initialize the modern async client
 client = AsyncMongoClient(MONGO_URL)
-
-# Select the database (Atlas creates this automatically if it doesn't exist)
 db = client["huff_a_puff_db"]
-
-# Export the users collection for use in other parts of the app
 users_collection = db["users"]
+posts_collection = db["posts"]
 
-
-posts_collection = db["posts"]  # Or database["posts"], depending on what you named your db variable!
+# --- CLOUDINARY SETUP ---
+cloudinary.config( 
+  cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"), 
+  api_key = os.getenv("CLOUDINARY_API_KEY"), 
+  api_secret = os.getenv("CLOUDINARY_API_SECRET"),
+  secure = True
+)
