@@ -4,6 +4,7 @@ from models.post_model import PostInDB
 from auth import get_current_user
 from database import users_collection, posts_collection
 import cloudinary.uploader
+from bson import ObjectId
 
 router = APIRouter()
 
@@ -67,6 +68,44 @@ async def create_new_post(
         "post_id": str(result.inserted_id), 
         "image_url": image_url
     }
+
+@router.post("/api/posts/{post_id}/like")
+async def toggle_like_post(post_id: str, current_user: str = Depends(get_current_user)):
+    """Toggles a like on a post. If already liked, unlikes it."""
+    
+    # 1. Validate the post_id format (MongoDB crashes if the ID string isn't perfectly formatted)
+    if not ObjectId.is_valid(post_id):
+        raise HTTPException(status_code=400, detail="Invalid Post ID format.")
+    
+    post_obj_id = ObjectId(post_id)
+
+    # 2. Find the post in the DB
+    post = await posts_collection.find_one({"_id": post_obj_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+
+    # 3. Check if the user is already in the liked_by_users array
+    # Note: We are using their username since that's what 'current_user' is
+    if current_user in post.get("liked_by_users", []):
+        # UNLIKE LOGIC: User is in the list, so remove them and subtract 1 from count
+        await posts_collection.update_one(
+            {"_id": post_obj_id},
+            {
+                "$pull": {"liked_by_users": current_user},
+                "$inc": {"likes_count": -1}
+            }
+        )
+        return {"message": "Post unliked", "liked": False}
+    else:
+        # LIKE LOGIC: User is not in the list, so add them and add 1 to count
+        await posts_collection.update_one(
+            {"_id": post_obj_id},
+            {
+                "$addToSet": {"liked_by_users": current_user},
+                "$inc": {"likes_count": 1}
+            }
+        )
+        return {"message": "Post liked", "liked": True}
 
 
 @router.get("/api/posts")
