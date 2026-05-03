@@ -159,3 +159,33 @@ async def add_comment(
     )
 
     return {"message": "Comment added successfully", "comment": new_comment}
+
+@router.delete("/api/posts/{post_id}")
+async def delete_post(
+    post_id: str,
+    current_user: str = Depends(get_current_user)
+):
+    """Deletes a post, but only if the user making the request is the author."""
+    
+    # 1. Validate the MongoDB ObjectId
+    if not ObjectId.is_valid(post_id):
+        raise HTTPException(status_code=400, detail="Invalid Post ID format.")
+    
+    post_obj_id = ObjectId(post_id)
+
+    # 2. Find the post in the database
+    post = await posts_collection.find_one({"_id": post_obj_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+
+    # 3. Security Check: Is this person the actual author?
+    if post.get("author_username") != current_user:
+        raise HTTPException(
+            status_code=403, 
+            detail="You are not authorized to delete this post."
+        )
+
+    # 4. If they pass the check, permanently delete it
+    await posts_collection.delete_one({"_id": post_obj_id})
+
+    return {"message": "Post permanently deleted."}
