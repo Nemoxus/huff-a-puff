@@ -5,6 +5,8 @@ from auth import get_current_user
 from database import users_collection, posts_collection
 import cloudinary.uploader
 from bson import ObjectId
+import uuid
+from datetime import datetime
 
 router = APIRouter()
 
@@ -69,6 +71,21 @@ async def create_new_post(
         "image_url": image_url
     }
 
+@router.get("/api/posts")
+async def get_feed(limit: int = 20, skip: int = 0, current_user: str = Depends(get_current_user)):
+    """Fetches the global chronological feed."""
+    
+    # Sort by created_at descending (-1) to get the newest posts first
+    cursor = posts_collection.find().sort("created_at", -1).skip(skip).limit(limit)
+    
+    posts = []
+    async for document in cursor:
+        document["_id"] = str(document["_id"]) 
+        posts.append(document)
+        
+    return {"feed": posts}
+
+
 @router.post("/api/posts/{post_id}/like")
 async def toggle_like_post(post_id: str, current_user: str = Depends(get_current_user)):
     """Toggles a like on a post. If already liked, unlikes it."""
@@ -108,16 +125,37 @@ async def toggle_like_post(post_id: str, current_user: str = Depends(get_current
         return {"message": "Post liked", "liked": True}
 
 
-@router.get("/api/posts")
-async def get_feed(limit: int = 20, skip: int = 0, current_user: str = Depends(get_current_user)):
-    """Fetches the global chronological feed."""
+@router.post("/api/posts/{post_id}/comment")
+async def add_comment(
+    post_id: str,
+    comment_text: str = Form(...),
+    current_user: str = Depends(get_current_user)
+):
+    """Adds a text comment to a specific post."""
     
-    # Sort by created_at descending (-1) to get the newest posts first
-    cursor = posts_collection.find().sort("created_at", -1).skip(skip).limit(limit)
+    # 1. Validate the MongoDB ObjectId
+    if not ObjectId.is_valid(post_id):
+        raise HTTPException(status_code=400, detail="Invalid Post ID format.")
     
-    posts = []
-    async for document in cursor:
-        document["_id"] = str(document["_id"]) 
-        posts.append(document)
-        
-    return {"feed": posts}
+    post_obj_id = ObjectId(post_id)
+
+    # 2. Make sure the post actually exists
+    post = await posts_collection.find_one({"_id": post_obj_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+
+    # 3. Build the comment object
+    new_comment = {
+        "comment_id": str(uuid.uuid4()),               # Unique ID just for this comment
+        "username": current_user,                      # The person making the comment
+        "text": comment_text,                          # The actual message
+        "created_at": datetime.utcnow().isoformat()    # When they posted it
+    }
+
+    # 4. Use $push to append this new comment object into the 'comments' array
+    await posts_collection.update_one(
+        {"_id": post_obj_id},
+        {"$push": {"comments": new_comment}}
+    )
+
+    return {"message": "Comment added successfully", "comment": new_comment}
