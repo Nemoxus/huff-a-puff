@@ -189,3 +189,47 @@ async def delete_post(
     await posts_collection.delete_one({"_id": post_obj_id})
 
     return {"message": "Post permanently deleted."}
+
+@router.delete("/api/posts/{post_id}/comments/{comment_id}")
+async def delete_comment(
+    post_id: str,
+    comment_id: str,
+    current_user: str = Depends(get_current_user)
+):
+    """Deletes a comment, but only if the user making the request is the author of that comment."""
+    
+    # 1. Validate the MongoDB ObjectId
+    if not ObjectId.is_valid(post_id):
+        raise HTTPException(status_code=400, detail="Invalid Post ID format.")
+    
+    post_obj_id = ObjectId(post_id)
+
+    # 2. Find the post in the database
+    post = await posts_collection.find_one({"_id": post_obj_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+
+    # 3. Find the specific comment within the post's comments array
+    comment_to_delete = None
+    for comment in post.get("comments", []):
+        if comment["comment_id"] == comment_id:
+            comment_to_delete = comment
+            break
+
+    if not comment_to_delete:
+        raise HTTPException(status_code=404, detail="Comment not found.")
+    
+    # 4. Security Check: Is this person the actual author of the comment?
+    if comment_to_delete["username"] != current_user:
+        raise HTTPException(
+            status_code=403, 
+            detail="You are not authorized to delete this comment."
+        )
+    
+    # 5. If they pass the check, use $pull to remove the comment from the array
+    await posts_collection.update_one(
+        {"_id": post_obj_id},
+        {"$pull": {"comments": {"comment_id": comment_id}}}
+    )
+
+    return {"message": "Comment deleted successfully"}
