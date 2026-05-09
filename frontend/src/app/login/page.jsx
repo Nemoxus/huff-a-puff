@@ -33,7 +33,8 @@ export default function Login() {
       localStorage.setItem("huff_token", data.access_token);
       localStorage.setItem("huff_username", data.username);
       
-      router.push("/early-access"); 
+      // FIXED: Redirect to the feed instead of early access
+      router.push("/feed"); 
     } catch (err) {
       setStatus({ loading: false, error: err.message });
     }
