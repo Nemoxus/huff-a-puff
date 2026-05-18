@@ -65,7 +65,7 @@ export default function Home() {
         </div>
 
         <h1 className="text-5xl md:text-6xl font-light text-gray-900 mb-6 tracking-tight text-center">
-          Ethereal Connection.
+          Enthusiasts' Den
         </h1>
         
         <p className="text-lg md:text-xl text-gray-600 font-light leading-relaxed max-w-2xl text-center mb-10">
