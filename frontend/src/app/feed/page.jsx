@@ -1,23 +1,56 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, Mail, User, Pen } from 'lucide-react'; 
+import { Bell, Mail, User, Pen, LogOut } from 'lucide-react'; 
 import Sidebar from '../../components/Sidebar';
 import PostCard from '../../components/PostCard';
-import CreatePostModal from '../../components/CreatePostModal'; // Imported the new modal
+import CreatePostModal from '../../components/CreatePostModal'; 
 
 export default function FeedPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // New state to control the modal
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   
   const router = useRouter();
+  const profileMenuRef = useRef(null);
 
-  // Wrapped fetch logic in useCallback so we can call it after a successful post
+  // --- CLICK OUTSIDE LISTENER ---
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // --- LOGOUT HANDLER ---
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('huff_token');
+      if (token) {
+        await fetch('http://127.0.0.1:8000/api/logout', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      localStorage.removeItem('huff_token');
+      localStorage.removeItem('huff_username');
+      router.push('/login');
+    }
+  };
+
   const fetchPosts = useCallback(async () => {
     try {
       const token = localStorage.getItem("huff_token"); 
@@ -50,17 +83,14 @@ export default function FeedPage() {
     }
   }, [router]);
 
-  // Initial fetch on mount
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
   return (
     <div className="flex bg-neutral-100 min-h-screen relative">
-      {/* Left Sidebar */}
       <Sidebar />
 
-      {/* Right Content Area (Top Bar + Main Feed) */}
       <div className="flex-1 flex flex-col">
         
         {/* Top Bar */}
@@ -72,9 +102,29 @@ export default function FeedPage() {
             <button className="text-neutral-500 hover:text-[#2196F3] transition">
               <Mail size={24} className="stroke-[1.5]" />
             </button>
-            <button className="flex items-center justify-center w-[42px] h-[42px] rounded-full border border-neutral-200 text-neutral-500 hover:text-[#2196F3] hover:border-[#2196F3] transition ml-2 bg-white shadow-sm">
-              <User size={22} className="stroke-[1.5]" />
-            </button>
+
+            {/* Profile Avatar & Dropdown Wrapper */}
+            <div className="relative" ref={profileMenuRef}>
+              <button 
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                className="flex items-center justify-center w-[42px] h-[42px] rounded-full border border-neutral-200 text-neutral-500 hover:text-[#2196F3] hover:border-[#2196F3] transition ml-2 bg-white shadow-sm"
+              >
+                <User size={22} className="stroke-[1.5]" />
+              </button>
+
+              {/* The Logout Capsule */}
+              {isProfileMenuOpen && (
+                <div className="absolute right-0 top-[52px] bg-white border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-full p-1 animate-in fade-in slide-in-from-top-1 zoom-in-95 duration-200 z-50">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center justify-center gap-2 px-5 py-2 text-[13.5px] font-semibold text-neutral-600 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors font-satoshi whitespace-nowrap"
+                  >
+                    <LogOut size={16} className="stroke-[2]" />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -111,19 +161,17 @@ export default function FeedPage() {
         </main>
       </div>
 
-      {/* Floating Action Button */}
       <button 
-        onClick={() => setIsModalOpen(true)} // Opens the modal
+        onClick={() => setIsModalOpen(true)}
         className="fixed bottom-10 right-12 w-16 h-16 bg-[#2196F3] text-white rounded-full flex items-center justify-center shadow-[0_8px_30px_rgb(33,150,243,0.35)] hover:bg-[#1E88E5] hover:-translate-y-1 hover:shadow-[0_12px_35px_rgb(33,150,243,0.45)] transition-all duration-300 z-50 group"
       >
         <Pen size={26} className="stroke-[2] group-hover:scale-110 transition-transform duration-300" />
       </button>
 
-      {/* The Modal Component */}
       <CreatePostModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        onSuccess={fetchPosts} // Passing the fetch function so it auto-refreshes!
+        onSuccess={fetchPosts} 
       />
 
     </div>
