@@ -4,12 +4,20 @@ load_dotenv()
 
 # backend/app/main.py
 from routers import posts
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 import os
-from datetime import datetime, timedelta
+import redis
+from datetime import datetime, timedelta, timezone
 from jose import jwt
+
+# Connect to Redis
+redis_client = redis.from_url(os.getenv("REDIS_URL"), decode_responses=True)
+
+# This tells FastAPI where our login route is so it can generate Swagger UI docs properly
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 
 # Import our custom modules
 from services.ocr_service import extract_text_from_image, find_dob_and_check_age
@@ -135,6 +143,29 @@ async def login_user(username: str = Form(...), password: str = Form(...)):
         "username": user["username"],
         "message": "Login successful!"
     }
+
+@app.post("/api/logout")
+async def logout(token: str = Depends(oauth2_scheme)):
+    try:
+        # 1. Decode the token to get the expiration time
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        expire_time = payload.get("exp")
+        
+        if expire_time:
+            # 2. Calculate how many seconds are left until it expires
+            current_time = int(datetime.now(timezone.utc).timestamp())
+            time_left = expire_time - current_time
+            
+            # 3. Add to Redis blacklist ONLY if it hasn't expired yet
+            if time_left > 0:
+                # setex = "Set with Expiration". 
+                # Key = the token itself, Time = time_left, Value = "blacklisted"
+                redis_client.setex(token, time_left, "blacklisted")
+                
+        return {"message": "Successfully logged out"}
+    except Exception as e:
+        # If the token is invalid or already expired, just return success anyway
+        return {"message": "Logged out"}
 
 # --- INCLUDE ROUTERS ---
 app.include_router(posts.router)
