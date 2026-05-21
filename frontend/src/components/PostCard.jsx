@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { formatRelativeTime } from '../utils/formatTime';
-import { Heart, MessageCircle } from 'lucide-react'; 
+import { Heart, MessageCircle } from 'lucide-react';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 import Comments from './Comments'; 
 
 export default function PostCard({ post }) {
@@ -76,7 +77,7 @@ export default function PostCard({ post }) {
           {post.image_url && (
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-neutral-100 mt-1">
               <Image
-                src={post.image_url}
+                src={getOptimizedImageUrl(post.image_url)}
                 alt={post.title}
                 fill
                 className="object-cover"
