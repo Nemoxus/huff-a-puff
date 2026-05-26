@@ -6,7 +6,7 @@ from database import users_collection, posts_collection
 import cloudinary.uploader
 from bson import ObjectId
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -70,6 +70,54 @@ async def create_new_post(
         "post_id": str(result.inserted_id), 
         "image_url": image_url
     }
+
+@router.put("/api/posts/{post_id}")
+async def edit_post(
+    post_id: str,
+    title: str = Form(...),
+    text_content: Optional[str] = Form(None),
+    current_user: str = Depends(get_current_user)
+):
+    """Updates the title and text content of a post, but only if requested by the author."""
+    
+    # 1. Validate the MongoDB ObjectId
+    if not ObjectId.is_valid(post_id):
+        raise HTTPException(status_code=400, detail="Invalid Post ID format.")
+    
+    post_obj_id = ObjectId(post_id)
+
+    # 2. Find the post in the database
+    post = await posts_collection.find_one({"_id": post_obj_id})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+
+    # 3. Security Check: Is this person the actual author?
+    if post.get("author_username") != current_user:
+        raise HTTPException(
+            status_code=403, 
+            detail="You are not authorized to edit this post."
+        )
+
+    # 4. Enforce rules: Post must still have text OR an existing image
+    if not text_content and not post.get("image_url"):
+        raise HTTPException(
+            status_code=400, 
+            detail="A post must contain either text, an image, or both."
+        )
+
+    # 5. Perform the update
+    await posts_collection.update_one(
+        {"_id": post_obj_id},
+        {
+            "$set": {
+                "title": title,
+                "text_content": text_content,
+                "updated_at": datetime.now(timezone.utc)
+            }
+        }
+    )
+
+    return {"message": "Post updated successfully"}
 
 @router.get("/api/posts")
 async def get_feed(limit: int = 20, skip: int = 0, current_user: str = Depends(get_current_user)):

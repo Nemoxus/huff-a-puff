@@ -16,5 +16,6 @@ class PostInDB(BaseModel):
     text_content: Optional[str] = None             # OPTIONAL
     image_url: Optional[str] = None                # OPTIONAL
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = None          # OPTIONAL
     likes_count: int = 0
     liked_by_users: List[str] = []
