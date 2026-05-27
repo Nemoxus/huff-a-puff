@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { formatRelativeTime } from '../utils/formatTime';
-import { Heart, MessageCircle } from 'lucide-react';
+import { Heart, MessageCircle, User } from 'lucide-react';
 import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 import Comments from './Comments'; 
 
@@ -59,14 +59,38 @@ export default function PostCard({ post }) {
         style={{ transform: showComments ? 'translateX(-200px)' : 'translateX(0)' }}
       >
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-neutral-100 flex flex-col gap-5 w-full">
-          <div className="flex items-start justify-between gap-4">
-            <h2 className="text-2xl font-semibold text-neutral-900 tracking-tight leading-tight font-satoshi">
-              {post.title}
-            </h2>
-            <span className="text-sm font-medium text-neutral-500 whitespace-nowrap pt-1">
+          
+          {/* --- POST HEADER --- */}
+          <div className="flex justify-between items-center w-full mb-2">
+            <div className="flex items-center gap-3">
+              
+              {/* Circular Profile Picture Wrapper */}
+              <div className="relative w-[38px] h-[38px] rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center overflow-hidden shrink-0">
+                {post.author_profile_pic ? (
+                  <Image 
+                    src={getOptimizedImageUrl(post.author_profile_pic)}
+                    alt={`${post.author_username}'s avatar`} 
+                    fill 
+                    className="object-cover"
+                  />
+                ) : (
+                  <User size={20} className="text-neutral-400 stroke-[1.5]" />
+                )}
+              </div>
+
+              {/* Post Title */}
+              <h3 className="text-[17px] font-bold text-neutral-900 font-satoshi leading-tight">
+                {post.title}
+              </h3>
+              
+            </div>
+            
+            {/* Timestamp */}
+            <span className="text-[13px] text-neutral-400 font-medium whitespace-nowrap ml-4 shrink-0">
               {formatRelativeTime(post.created_at)}
             </span>
           </div>
+          {/* --- END POST HEADER --- */}
 
           {hasText && (
             <p className="text-neutral-700 text-[17px] leading-relaxed font-general-sans font-light">
