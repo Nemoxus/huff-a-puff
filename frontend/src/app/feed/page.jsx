@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Bell, Mail, User, Pen, LogOut } from 'lucide-react'; 
 import Sidebar from '../../components/Sidebar';
 import PostCard from '../../components/PostCard';
-import CreatePostModal from '../../components/CreatePostModal'; 
+import CreatePostModal from '../../components/CreatePostModal';
+import ProfileSetupPrompt from '../../components/ProfileSetupPrompt';
 
 export default function FeedPage() {
   const [posts, setPosts] = useState([]);
@@ -173,6 +174,8 @@ export default function FeedPage() {
         onClose={() => setIsModalOpen(false)} 
         onSuccess={fetchPosts} 
       />
+
+      <ProfileSetupPrompt />
 
     </div>
   );
