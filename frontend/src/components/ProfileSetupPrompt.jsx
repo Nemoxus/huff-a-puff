@@ -39,7 +39,7 @@ export default function ProfileSetupPrompt() {
   }, []);
 
   const handleContinue = () => {
-    router.push('/early-access');
+    router.push('/profile');
   };
 
   const handleSkip = () => {
