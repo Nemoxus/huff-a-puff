@@ -52,6 +52,7 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - [x] **Main Feed**: Clean, centered feed layout with modern typography (Satoshi/General Sans).
 - [x] **Sidebar**: Navigation hub for the platform.
 - [x] **Modals**: Smooth, interactive modals for creating content.
+- [x] **Edit Profile**: Minimalist screen for editing & updating user's display name, profile picture, bio and more
 
 ---
 
@@ -65,4 +66,4 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **Mobile Optimization**: Ensure the UI is fully responsive across all device sizes.
 
 ---
-*Last updated: May 27, 2026*
+*Last updated: May 29, 2026*

@@ -11,3 +11,6 @@ frontend/build/
 
 # Node modules
 frontend/node_modules/
+
+# misc
+screens
