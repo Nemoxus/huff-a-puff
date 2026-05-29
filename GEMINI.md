@@ -14,7 +14,7 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **MongoDB (Motor)**: NoSQL database used for flexible storage of user profiles, posts, and comments.
 - **Redis**: Utilized for real-time token blacklisting to handle secure logouts.
 - **Tesseract OCR (pytesseract)**: Used for extracting dates of birth from uploaded ID images for age verification.
-- **Cloudinary**: Cloud-based service for managing and serving user-uploaded post images.
+- **Cloudinary**: Cloud-based service for managing and serving user-uploaded images (posts, avatars, and banners).
 - **JWT (python-jose)**: JSON Web Token implementation for secure authentication.
 - **Passlib (bcrypt)**: Industry-standard password hashing.
 
@@ -30,16 +30,18 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **Asynchronous Design**: Full-stack async implementation (FastAPI `async/await` and React `fetch/hooks`) for high concurrency.
 - **OCR Verification Workflow**: A strict registration gate that processes image bytes, identifies the oldest date in the text as the DOB, and calculates age before allowing account creation.
 - **Security-First Auth**: JWT-based stateless authentication supplemented by a Redis-backed blacklist to invalidate tokens upon logout.
+- **Image Management**: Integrated Cloudinary support for asynchronous uploads of post content, user avatars, and profile banners.
 - **Component-Based UI**: Reusable frontend architecture (e.g., `PostCard`, `Sidebar`, `CreatePostModal`) to maintain consistency and scalability.
 
 ---
 
 ## ✅ Completed Tasks
 
-### Authentication & Security
+### Authentication & User Management
 - [x] **Registration**: Multi-part form handling with integrated OCR age verification.
 - [x] **Login**: JWT-based authentication with hashed password verification.
 - [x] **Logout**: Implementation of a Redis-backed token blacklist.
+- [x] **Profile Updates**: Backend API (`PUT /api/profile`) for updating display name, bio, interests, and uploading avatars/banners to Cloudinary.
 
 ### Content & Interaction
 - [x] **Post Creation**: Support for text and image posts with Cloudinary integration.
