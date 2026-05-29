@@ -11,9 +11,12 @@ class CreateUser(BaseModel):
 
 class UserInDB(BaseModel):
     username: str
+    display_name: Optional[str] = None
     email: str
     hashed_password: str
     age: int
     bio: Optional[str] = None
+    interests: list[str] = []
     avatar_url: Optional[str] = None
+    banner_pic_url: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Asia/Kolkata")))    

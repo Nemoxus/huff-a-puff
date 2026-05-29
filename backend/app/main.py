@@ -3,15 +3,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # backend/app/main.py
-from routers import posts
+from routers import posts, users
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 import os
 import redis
+import cloudinary.uploader
+import json
 from datetime import datetime, timedelta, timezone
 from jose import jwt
+from typing import Optional, List
 
 # Connect to Redis
 redis_client = redis.from_url(os.getenv("REDIS_URL"), decode_responses=True)
@@ -23,6 +26,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 from services.ocr_service import extract_text_from_image, find_dob_and_check_age
 from database import users_collection
 from models.user_model import UserInDB
+from auth import get_current_user
 
 app = FastAPI(title="Huff-a-Puff API")
 
@@ -169,3 +173,4 @@ async def logout(token: str = Depends(oauth2_scheme)):
 
 # --- INCLUDE ROUTERS ---
 app.include_router(posts.router)
+app.include_router(users.router)
