@@ -111,7 +111,7 @@ export default function ProfileSetupPrompt() {
             </svg>
           </div>
           <span className="text-[13.5px] text-neutral-500 group-hover:text-neutral-800 transition-colors font-general-sans select-none">
-            Don't Ask Me Again
+            Don&apos;t Ask Me Again
           </span>
         </label>
         

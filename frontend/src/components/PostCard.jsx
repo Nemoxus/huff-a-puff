@@ -20,6 +20,7 @@ export default function PostCard({ post }) {
   useEffect(() => {
     const currentUsername = localStorage.getItem('huff_username');
     if (currentUsername && post.liked_by_users?.includes(currentUsername)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLiked(true);
     }
   }, [post]);

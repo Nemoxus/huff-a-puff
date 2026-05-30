@@ -131,7 +131,7 @@ export default function CreatePostModal({ isOpen, onClose, onSuccess }) {
 
           {/* Text Content Input */}
           <div className="flex flex-col gap-2">
-            <label className="text-[13px] font-semibold text-neutral-600 tracking-wide font-satoshi">What's on your mind?</label>
+            <label className="text-[13px] font-semibold text-neutral-600 tracking-wide font-satoshi">What&apos;s on your mind?</label>
             <textarea 
               value={textContent}
               onChange={(e) => setTextContent(e.target.value)}

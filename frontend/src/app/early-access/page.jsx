@@ -62,7 +62,7 @@ export default function EarlyAccess() {
 
         {/* Typography */}
         <h1 className="text-4xl md:text-[42px] font-semibold text-gray-900 mb-6 tracking-tight">
-          Oh! You're Early Here!
+          Oh! You&apos;re Early Here!
         </h1>
         
         <p className="text-[17px] text-gray-500 font-light leading-relaxed max-w-xl mx-auto mb-10">
@@ -72,7 +72,7 @@ export default function EarlyAccess() {
         {/* Input Form */}
         {submitted ? (
           <div className="bg-[#F0F9FF] border border-[#2196F3] text-[#0055A4] px-8 py-4 rounded-md inline-block font-light">
-            Thank you! We'll notify you as soon as we open.
+            Thank you! We&apos;ll notify you as soon as we open.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 w-full max-w-[500px] mx-auto">
