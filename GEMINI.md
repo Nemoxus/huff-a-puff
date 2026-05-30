@@ -24,6 +24,10 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **Tailwind CSS 4**: Modern utility-first CSS framework for styling and responsive design.
 - **Lucide React**: Icon library for a clean and consistent UI.
 
+### DevOps & Testing
+- **GitHub Actions**: Automated CI/CD pipeline ensuring backend stability (Pytest) and frontend build integrity (lint/build).
+- **Pytest**: Framework utilized for backend unit testing and continuous integration.
+
 ---
 
 ## ⚙️ Methodology
@@ -56,6 +60,10 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - [x] **Modals**: Smooth, interactive modals for creating content.
 - [x] **Edit Profile**: Minimalist screen for editing & updating user's display name, profile picture, bio and more
 
+### DevOps & Quality Assurance
+- [x] **CI/CD Pipeline**: Set up GitHub Actions (`ci.yml`) for automated backend testing (Pytest) and frontend checks (linting & building).
+- [x] **Backend Testing**: Initialized test suite (`test_main.py`) for CI integration.
+
 ---
 
 ## ⏩ Follow-Up Section (Next Steps)
@@ -68,4 +76,4 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **Mobile Optimization**: Ensure the UI is fully responsive across all device sizes.
 
 ---
-*Last updated: May 29, 2026*
+*Last updated: May 31, 2026*
