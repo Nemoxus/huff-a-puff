@@ -46,12 +46,13 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - [x] **Registration**: Multi-part form handling with integrated OCR age verification.
 - [x] **Login**: JWT-based authentication with hashed password verification.
 - [x] **Logout**: Implementation of a Redis-backed token blacklist.
-- [x] **Profile Updates**: Backend API (`PUT /api/profile`) for updating display name, bio, interests, and uploading avatars/banners to Cloudinary.
+- [x] **Profile Management**: Backend APIs for updating (`PUT /api/profile`) and fetching (`GET /api/profile/{username}`) user profiles.
 
 ### Content & Interaction
 - [x] **Post Creation**: Support for text and image posts with Cloudinary integration.
 - [x] **Post Editing**: API support for authors to update title and text content.
 - [x] **Global Feed**: Chronological retrieval of posts with basic pagination support.
+- [x] **User Content**: Specific API (`GET /api/posts/user/{username}`) to retrieve posts by a particular user.
 - [x] **Engagement**: Toggle like/unlike functionality and comment threading (add/delete).
 - [x] **Authorization**: Backend checks to ensure only authors can delete their own posts or comments.
 
@@ -59,7 +60,8 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - [x] **Main Feed**: Clean, centered feed layout with modern typography (Satoshi/General Sans).
 - [x] **Sidebar**: Navigation hub for the platform.
 - [x] **Modals**: Smooth, interactive modals for creating content.
-- [x] **Edit Profile**: Minimalist screen for editing & updating user's display name, profile picture, bio and more
+- [x] **Profile Pages**: Dynamic routes (`/profile/[username]`) for viewing any user's profile, featuring banners, avatars, bios, and an interactive post carousel.
+- [x] **Edit Profile**: Dedicated interface (`/profile`) for users to update their identity, interests, and profile aesthetics.
 
 ### DevOps & Quality Assurance
 - [x] **CI/CD Pipeline**: Set up GitHub Actions (`ci.yml`) for automated backend testing (Pytest) and frontend checks (Jest testing, linting & building).
@@ -70,7 +72,6 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 
 ## ⏩ Follow-Up Section (Next Steps)
 
-- **User Profiles**: Develop a dedicated profile page (`/profile/[username]`) showing user-specific posts and stats.
 - **Direct Messaging**: Implement the planned `dms.py` router to enable private conversations.
 - **Real-Time Updates**: Integrate WebSockets for instant notifications of likes, comments, and messages.
 - **Search Functionality**: Add a search bar to discover users and post content.
@@ -78,4 +79,4 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **Mobile Optimization**: Ensure the UI is fully responsive across all device sizes.
 
 ---
-*Last updated: May 31, 2026*
+*Last updated: June 1, 2026*
