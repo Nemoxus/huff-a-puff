@@ -25,8 +25,9 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - **Lucide React**: Icon library for a clean and consistent UI.
 
 ### DevOps & Testing
-- **GitHub Actions**: Automated CI/CD pipeline ensuring backend stability (Pytest) and frontend build integrity (lint/build).
+- **GitHub Actions**: Automated CI/CD pipeline ensuring backend stability (Pytest) and frontend stability (Jest/lint/build).
 - **Pytest**: Framework utilized for backend unit testing and continuous integration.
+- **Jest & React Testing Library**: Frameworks utilized for frontend component testing.
 
 ---
 
@@ -61,8 +62,9 @@ Huff-a-Puff is a modern social platform focused on verified interaction and cont
 - [x] **Edit Profile**: Minimalist screen for editing & updating user's display name, profile picture, bio and more
 
 ### DevOps & Quality Assurance
-- [x] **CI/CD Pipeline**: Set up GitHub Actions (`ci.yml`) for automated backend testing (Pytest) and frontend checks (linting & building).
+- [x] **CI/CD Pipeline**: Set up GitHub Actions (`ci.yml`) for automated backend testing (Pytest) and frontend checks (Jest testing, linting & building).
 - [x] **Backend Testing**: Initialized test suite (`test_main.py`) for CI integration.
+- [x] **Frontend Testing**: Initialized Jest testing environment and React Testing Library (`Sidebar.test.jsx`) for CI integration.
 
 ---
 
