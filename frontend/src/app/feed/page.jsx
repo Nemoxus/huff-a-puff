@@ -25,6 +25,7 @@ export default function FeedPage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const uname = localStorage.getItem('huff_username') || '';
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentUsername(uname);
       
       if (uname) {

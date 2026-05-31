@@ -24,6 +24,7 @@ export default function ProfileDisplayPage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const currentUname = localStorage.getItem('huff_username') || '';
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentUsername(currentUname);
 
       if (currentUname) {

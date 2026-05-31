@@ -34,6 +34,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const storedUsername = localStorage.getItem('huff_username');
     if (storedUsername) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUsername(storedUsername);
       
       const fetchExistingProfile = async () => {
