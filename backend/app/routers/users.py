@@ -68,3 +68,15 @@ async def update_profile(
         "message": "Profile updated successfully", 
         "updated_fields": list(update_data.keys())
     }
+
+@router.get("/api/profile/{username}")
+async def get_user_profile(username: str):
+    """Fetches a user's public profile data."""
+    user = await users_collection.find_one({"username": username})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Remove the password before sending it to the frontend!
+    user.pop("hashed_password", None)
+    user["_id"] = str(user["_id"])
+    return user
