@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { formatRelativeTime } from '../utils/formatTime';
 import { Heart, MessageCircle, User } from 'lucide-react';
 import { getOptimizedImageUrl } from '../utils/imageOptimizer';
@@ -65,24 +66,26 @@ export default function PostCard({ post }) {
           <div className="flex justify-between items-center w-full mb-2">
             <div className="flex items-center gap-3">
               
-              {/* Circular Profile Picture Wrapper */}
-              <div className="relative w-[38px] h-[38px] rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center overflow-hidden shrink-0">
-                {post.author_profile_pic ? (
-                  <Image 
-                    src={getOptimizedImageUrl(post.author_profile_pic)}
-                    alt={`${post.author_username}'s avatar`} 
-                    fill 
-                    className="object-cover"
-                  />
-                ) : (
-                  <User size={20} className="text-neutral-400 stroke-[1.5]" />
-                )}
-              </div>
+              <Link href={`/profile/${post.author_username}`} className="flex items-center gap-3 group cursor-pointer">
+                {/* Circular Profile Picture Wrapper */}
+                <div className="relative w-[38px] h-[38px] rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#2196F3] transition-colors">
+                  {post.author_profile_pic ? (
+                    <Image 
+                      src={getOptimizedImageUrl(post.author_profile_pic)}
+                      alt={`${post.author_username}'s avatar`} 
+                      fill 
+                      className="object-cover"
+                    />
+                  ) : (
+                    <User size={20} className="text-neutral-400 stroke-[1.5]" />
+                  )}
+                </div>
 
-              {/* Post Title */}
-              <h3 className="text-[17px] font-bold text-neutral-900 font-satoshi leading-tight">
-                {post.title}
-              </h3>
+                {/* Post Title */}
+                <h3 className="text-[17px] font-bold text-neutral-900 font-satoshi leading-tight group-hover:text-[#2196F3] transition-colors">
+                  {post.title}
+                </h3>
+              </Link>
               
             </div>
             
@@ -144,7 +147,6 @@ export default function PostCard({ post }) {
                     className={`stroke-[2.25] transition-all duration-300 ${showComments ? 'fill-blue-50' : 'group-hover:scale-110'}`} 
                   />
                 </button>
-                {/* THE FIX: We now use the local 'comments' state length! */}
                 {comments.length > 0 && (
                   <span className={`text-base font-semibold pt-0.5 transition-colors ${showComments ? 'text-[#2196F3]' : 'text-neutral-500'}`}>
                     {comments.length}
